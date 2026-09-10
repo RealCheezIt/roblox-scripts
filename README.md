@@ -1,2 +1,1 @@
-# gameScript
-C#, Luau and more
+## Luau scripts storage for roblox stuido
