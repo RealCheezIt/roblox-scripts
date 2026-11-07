@@ -1,22 +1,24 @@
-# NPC 대화 스크립트
-# LocalScript
+--- LocalScript --
+video : https://youtu.be/9Hp8AHkx6HQ
+
 
 
 local player = game.Players.LocalPlayer
 local promptService = game:GetService("ProximityPromptService")
 local TweenService = game:GetService("TweenService")
 local camera = workspace.CurrentCamera
-
+---------------------------------------------- change the names that suit ur studio
 local gui = script.Parent
 local frame = gui:WaitForChild("MainFrame")
 local label = frame:WaitForChild("NPCNameLabel")
 local btn1 = frame:WaitForChild("Option1")
 local btn2 = frame:WaitForChild("Option2")
+----------------------------------------------
 
 local originalCameraCFrame
-local currentPrompt -- 현재 상호작용 중인 프롬프트를 기억하기 위한 변수
+local currentPrompt -- Variable that 
 
--- 타자기 효과 함수
+-- Typing effect-
 local function typeWrite(target, message)
 	target.Text = ""
 	for i = 1, utf8.len(message) do 
@@ -25,13 +27,13 @@ local function typeWrite(target, message)
 	end
 end
 
--- 대화 시작 함수
+-- start the dialogue
 local function startDialogue(npc)
-	-- NPC의 머리나 루트파트를 찾음 (카메라 초점용)
+	-- camera anchor
 	local head = npc:FindFirstChild("Head") or npc:FindFirstChild("HumanoidRootPart")
 	if not head then return end
 
-	-- 현재 프롬프트 숨기기
+	-- hide the prompt
 	currentPrompt = npc:FindFirstChildWhichIsA("ProximityPrompt", true)
 	if currentPrompt then
 		currentPrompt.Enabled = false
@@ -41,7 +43,7 @@ local function startDialogue(npc)
 	btn1.Visible = true
 	btn2.Visible = true
 
-	-- 카메라 트위닝 (튜닝)
+	-- tweening
 	camera.CameraType = Enum.CameraType.Scriptable
 	local targetCFrame = CFrame.new(head.Position + (head.CFrame.LookVector * 7) + Vector3.new(1, 1, 1), head.Position)
 
@@ -49,13 +51,13 @@ local function startDialogue(npc)
 		CFrame = targetCFrame
 	})
 	cameraTween:Play()
-
-	typeWrite(label, "수정")
-	btn1.Text = "수정"
-	btn2.Text = "수정"
+---------change the options!-------
+	typeWrite(label, "1")
+	btn1.Text = "option1"
+	btn2.Text = "option2"
 end
 
--- 대화 종료 함수
+-- finish the dialogue
 local function closeDialogue(finalMsg)
 	btn1.Visible = false
 	btn2.Visible = false
@@ -63,34 +65,34 @@ local function closeDialogue(finalMsg)
 
 	task.wait(1)
 
-	--  카메라 복구
+	--  camera 
 	camera.CameraType = Enum.CameraType.Custom
 	frame.Visible = false
 
-	--  숨겼던 프롬프트 다시 켜기
+	--  visible the dialogue 
 	if currentPrompt then
 		currentPrompt.Enabled = true
 		currentPrompt = nil
 	end
 end
 
--- 이벤트 연결
+-- connect event
 promptService.PromptTriggered:Connect(function(prompt, playerWhoTriggered)
-	if playerWhoTriggered == player and prompt.Name == "DialoguePrompt" then
-		local npcModel = prompt:FindFirstAncestorOfClass("Model")
+	if playerWhoTriggered == player and prompt.Name == "ProximityPrompt" then
+		local npcModel = prompt:FindFirstAncestor("NPC")
 		if npcModel then
 			startDialogue(npcModel)
 		end
 	end
 end)
-
+----------- change the NPC's answer!! -------
 btn1.MouseButton1Click:Connect(function() 
-	closeDialogue("수정") 
+	closeDialogue("answer that if u pick option 1") 
 end)
 
 btn2.MouseButton1Click:Connect(function() 
-	closeDialogue("hi") 
+	closeDialogue("answer that if u pick option2") 
 end)
 
--- 초기 상태 설정
+-- ahh it for default state
 frame.Visible = false
